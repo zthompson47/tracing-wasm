@@ -25,6 +25,8 @@ extern "C" {
     fn log3(message1: &str, message2: &str, message3: &str);
     #[wasm_bindgen(js_namespace = console, js_name = log)]
     fn log4(message1: String, message2: &str, message3: &str, message4: &str);
+    #[wasm_bindgen(js_namespace = console, js_name = log)]
+    fn log5(message1: String, message2: &str, message3: &str, message4: &str, message5: &str);
 }
 
 #[cfg(test)]
@@ -308,14 +310,8 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WASMLayer {
                     .unwrap_or_default();
 
                 if self.config.use_console_color {
-                    log4(
-                        format!(
-                            "%c{}%c {}{}%c{}",
-                            level,
-                            origin,
-                            thread_display_suffix(),
-                            recorder,
-                        ),
+                    log5(
+                        format!("%c{}%c %O{}%c{}", level, thread_display_suffix(), recorder,),
                         match *level {
                             tracing::Level::TRACE => "color: dodgerblue; background: #444",
                             tracing::Level::DEBUG => "color: lawngreen; background: #444",
@@ -324,16 +320,14 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WASMLayer {
                             tracing::Level::ERROR => "color: red; background: #444",
                         },
                         "color: gray; font-style: italic",
+                        &origin,
                         "color: inherit",
                     );
                 } else {
-                    log1(format!(
-                        "{} {}{} {}",
-                        level,
-                        origin,
-                        thread_display_suffix(),
-                        recorder,
-                    ));
+                    log2(
+                        format!("{} %O{} {}", level, thread_display_suffix(), recorder),
+                        &origin,
+                    );
                 }
             }
             if self.config.report_logs_in_timings {
