@@ -311,7 +311,7 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WASMLayer {
 
                 if self.config.use_console_color {
                     log5(
-                        format!("%c{}%c %O{}%c{}", level, thread_display_suffix(), recorder,),
+                        format!("%c{}%c %O{}%c{}", level, thread_display_suffix(), recorder),
                         match *level {
                             tracing::Level::TRACE => "color: dodgerblue; background: #444",
                             tracing::Level::DEBUG => "color: lawngreen; background: #444",
@@ -325,7 +325,7 @@ impl<S: Subscriber + for<'a> LookupSpan<'a>> Layer<S> for WASMLayer {
                     );
                 } else {
                     log2(
-                        format!("{} %O{} {}", level, thread_display_suffix(), recorder),
+                        &format!("{} %O{} {}", level, thread_display_suffix(), recorder),
                         &origin,
                     );
                 }
